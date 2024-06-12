@@ -1,0 +1,777 @@
+﻿<UserControl x:Class="NetworkService.Views.NetworkDisplayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NetworkService.Views"
+             xmlns:viewModel="clr-namespace:NetworkService.ViewModel"
+             xmlns:model="clr-namespace:NetworkService.Model"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400">
+    <UserControl.DataContext>
+        <viewModel:NetworkDisplayViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="400"/>
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="0" 
+                  Margin="10 10 10 10"
+                  Name="Display_ListView"
+                  ItemsSource="{Binding EntitiesDisplay}"
+                  SelectedItem="{Binding SelectedWaterFlowMeter}">
+            <!--Ovde ce ici TreeView ili ListView-->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"></TextBlock>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding SelectionChanged}" CommandParameter="{Binding ElementName=Display_ListView}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:InvokeCommandAction Command="{Binding MouseLeftButtonUp}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListView>
+        <Grid Grid.Row="1"
+              Margin="5 5 5 5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!--PRVI KVADRATIC-->
+            <Button Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="0"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[0]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="0"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="0"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+
+
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="0"
+                        Grid.Column="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[0].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[0].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--DRUGI KVADRATIC-->
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="1"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[1]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="1"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="1"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="0"
+                        Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[1].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[1].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--TRECI KVADRATIC-->
+            <Button Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="2"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[2]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="2"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="2"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="0"
+                        Grid.Column="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[2].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[2].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--CETVRTI KVADRATIC-->
+            <Button Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="3"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[3]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="3"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="3"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="0"
+                        Grid.Column="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[3].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[3].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--PETI KVADRATIC-->
+            <Button Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="4"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[4]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="4"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="4"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="1"
+                        Grid.Column="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[4].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[4].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--SESTI KVADRATIC-->
+            <Button Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="5"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[5]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="5"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="5"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="1"
+                        Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[5].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[5].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--SEDMI KVADRATIC-->
+            <Button Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="6"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[6]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="6"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="6"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="1"
+                        Grid.Column="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[6].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[6].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--OSMI KVADRATIC-->
+            <Button Grid.Row="1"
+                    Grid.Column="3"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="7"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="1"
+                    Grid.Column="3"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[7]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="7"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="7"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="1"
+                        Grid.Column="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[7].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[7].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--DEVETI KVADRATIC-->
+            <Button Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="8"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[8]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="8"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="8"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="2"
+                        Grid.Column="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[8].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[8].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--DESETI KVADRATIC-->
+            <Button Grid.Row="2"
+                    Grid.Column="1"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="9"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="2"
+                    Grid.Column="1"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[9]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="9"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="9"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="2"
+                        Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[9].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[9].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--JEDANAESTI KVADRATIC-->
+            <Button Grid.Row="2"
+                    Grid.Column="2"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="10"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="2"
+                    Grid.Column="2"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[10]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="10"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="10"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="2"
+                        Grid.Column="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[10].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[10].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <!--DVANAESTI KVADRATIC-->
+            <Button Grid.Row="2"
+                    Grid.Column="3"
+                    Margin="15 0 15 110"
+                    Height="20"
+                    Command="{Binding FreeCanvas}"
+                    CommandParameter="11"
+                    Content="Delete"
+                    FontWeight="Medium"
+                    Background="#967E76">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Border Grid.Row="2"
+                    Grid.Column="3"
+                    Margin="0 10 0 30"
+                    Height="60">
+                <ContentControl Content="{Binding Path=CanvasCollection[11]}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropEntityOnCanvas}" CommandParameter="11"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonDownOnCanvas}" CommandParameter="11"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding LeftMouseButtonUp}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ContentControl>
+            </Border>
+            <StackPanel VerticalAlignment="Bottom"
+                        Grid.Row="2"
+                        Grid.Column="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Path=CanvasInfo[11].WaterValue}" 
+                                   Margin="5 5 5 5"/>
+                        <TextBlock Text="{Binding Path=CanvasInfo[11].Id}" 
+                                   Margin="5 5 5 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Val: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="ID: "
+                                   HorizontalAlignment="Center"
+                                   Margin="5 5 5 5"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

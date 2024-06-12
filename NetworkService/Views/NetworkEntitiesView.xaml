@@ -1,0 +1,740 @@
+﻿<UserControl x:Class="NetworkService.Views.NetworkEntitiesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NetworkService.Views"
+             xmlns:viewModel="clr-namespace:NetworkService.ViewModel" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400">
+    <UserControl.DataContext>
+        <viewModel:NetworkEntitiesViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <StackPanel>
+            <StackPanel Height="150"
+                    VerticalAlignment="Top"
+                    Background="#9BABB8">
+                <Grid>
+
+                    <Label Content="ID: "
+                           Margin="30 0 0 0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"/>
+                    <TextBox Margin="80 5 30 5"
+                             Height="20"
+                             Name="ID_TB"
+                             Text="{Binding NewId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             TextAlignment="Left"
+                             Background="#EEE3CB">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="GotFocus">
+                                <i:InvokeCommandAction Command="{Binding TextBoxFocusedCommand}" CommandParameter="{Binding ElementName=ID_TB}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="TextChanged">
+                                <i:InvokeCommandAction Command="{Binding CheckIdCommand}" CommandParameter="{Binding ElementName=ID_TB}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                    <Label Content="{Binding IdMsg}"
+                           Visibility="{Binding AddIdVisibility}"
+                           Margin="180 0 0 0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"
+                           Foreground="Red"/>
+                </Grid>
+                <Grid>
+                    <Label Content="Name: "
+                           Margin="30 0 0 0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"/>
+                    <TextBox Margin="80 10 30 10"
+                             Height="20"
+                             Name="Name_TB"
+                             Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             TextAlignment="Left"
+                             Background="#EEE3CB">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="GotFocus">
+                                <i:InvokeCommandAction Command="{Binding TextBoxFocusedCommand}" CommandParameter="{Binding ElementName=Name_TB}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                    <Label Content="{Binding NameMSg}"
+                           Visibility="{Binding AddNameVisibility}"
+                           Margin="180 0 0 0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"
+                           Foreground="Red"/>
+                </Grid>
+                <ComboBox Name="Type_CB" 
+                      Margin="30 5 30 5"
+                      Background="#EEE3CB"
+                      ItemsSource="{Binding WaterFlowMeterTypes}"
+                      SelectedValue="{Binding TypeString}">
+
+                </ComboBox>
+                <Button Content="Add" 
+                    Height="30"
+                    Margin="30 5 30 5"
+                    Command="{Binding AddCommand}"
+                    Background="#967E76"
+                    FontSize="18"
+                    FontWeight="SemiBold">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="15"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            <StackPanel Height="230"
+                        VerticalAlignment="Top"
+                        IsEnabled="True">
+                <ListView Margin="30 10 30 10"
+                          ItemsSource="{Binding Entities}"
+                          SelectedItem="{Binding SelectedWaterFlowMeter}"
+                          Background="#EEE3CB">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID"
+                                            Width="40"
+                                            DisplayMemberBinding="{Binding Id}"/>
+                            <GridViewColumn Header="Name"
+                                            Width="100"
+                                            DisplayMemberBinding="{Binding Name}"/>
+                            <GridViewColumn Header="Type"
+                                            Width="120"
+                                            DisplayMemberBinding="{Binding Type.Name}"/>
+                            <GridViewColumn Header="Value"
+                                            Width="60"
+                                            DisplayMemberBinding="{Binding WaterValue}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Top" 
+                        Height="30"
+                        Margin="0 10 0 10">
+                <Button Content="Delete"
+                        Margin="30 0 30 30"
+                        Height="30"
+                        Command="{Binding DeleteCommand}"
+                        Background="#967E76"
+                        FontSize="18"
+                        FontWeight="SemiBold">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="15"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Top">
+                <Grid>
+                    <!--Grid za filterovanje-->
+                    <Grid
+                            IsEnabled="{Binding IsFilterEnabled}"
+                            Visibility="{Binding FilterVisibility}">
+                            <ComboBox Name="Filter_CB" 
+                              Margin="30 5 30 5"
+                              Height="20"
+                              VerticalAlignment="Top"
+                              Background="#EEE3CB"
+                              ItemsSource="{Binding WaterFlowMeterTypes}"
+                              SelectedValue="{Binding FilterTypeString}">
+                        </ComboBox>
+                        <Grid>
+                            <Label Content="ID: "
+                                   Margin="30 36 20 20"
+                                   FontWeight="SemiBold"/>
+                            <TextBox Margin="60 40 195 5"
+                                     TextAlignment="Left"
+                                     Name="EnterID_TB"
+                                     Height="20"
+                                     VerticalAlignment="Top"
+                                     Background="#EEE3CB"
+                                     Text="{Binding FilterIdString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            </TextBox>
+                        </Grid>
+                        <Button Content="Filter"
+                                Margin="30 70 195 5"
+                                Height="30"
+                                VerticalAlignment="Top"
+                                Background="#967E76"
+                                Command="{Binding FilterCommand}"
+                                FontSize="18"
+                                FontWeight="SemiBold">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="15"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        <Button Content="Remove filter"
+                            Margin="30 110 195 5"
+                            Height="30"
+                            VerticalAlignment="Top"
+                            Background="#967E76"
+                            Command="{Binding RemoveFilterCommand}"
+                            FontSize="18"
+                            FontWeight="SemiBold">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="15"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        <RadioButton Margin="220 43 20 0"
+                             Content="less then id"
+                             GroupName="Filter_Group"
+                             Name="less_RB"
+                             IsChecked="{Binding IsLessChecked}">
+                        </RadioButton>
+                        <RadioButton Margin="220 78 20 0"
+                             Content="greater then id"
+                             GroupName="Filter_Group"
+                             Name="greater_RB">
+                        </RadioButton>
+                        <RadioButton Margin="220 118 20 0"
+                             Content="equal to id"
+                             GroupName="Filter_Group"
+                             Name="equal_RB"
+                                     IsChecked="{Binding IsEqualChecked}">
+                        </RadioButton>
+                    </Grid>
+                    <!--Grid za tastaturu-->
+                    <Grid Name="Keyboard_GRID"
+                          Margin="25 10 25 10"
+                          Visibility="{Binding KeyboardVisibility}"
+                          IsEnabled="{Binding IsKeyboardEnabled}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Button Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="5 4 5 4"
+                                Content="1"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="1">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="5 4 5 4"
+                                Content="2"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="2">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="2"
+                                Margin="5 4 5 4"
+                                Content="3"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="3">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="3"
+                                Margin="5 4 5 4"
+                                Content="4"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="4">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="4"
+                                Margin="5 4 5 4"
+                                Content="5"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="5">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="5"
+                                Margin="5 4 5 4"
+                                Content="6"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="6">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="6"
+                                Margin="5 4 5 4"
+                                Content="7"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="7">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="7"
+                                Margin="5 4 5 4"
+                                Content="8"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="8">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="8"
+                                Margin="5 4 5 4"
+                                Content="9"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="9">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="0"
+                                Grid.Column="9"
+                                Margin="5 4 5 4"
+                                Content="0"
+                                Command="{Binding IntPressedCommand}"
+                                CommandParameter="0">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        
+                        <!--Letters-->
+                        <Button Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="5 4 5 4"
+                                Content="Q"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="Q">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="5 4 5 4"
+                                Content="W"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="W">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="2"
+                                Margin="5 4 5 4"
+                                Content="E"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="E">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="3"
+                                Margin="5 4 5 4"
+                                Content="R"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="R">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="4"
+                                Margin="5 4 5 4"
+                                Content="T"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="T">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="5"
+                                Margin="5 4 5 4"
+                                Content="Y"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="Y">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="6"
+                                Margin="5 4 5 4"
+                                Content="U"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="U">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="7"
+                                Margin="5 4 5 4"
+                                Content="I"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="I">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="8"
+                                Margin="5 4 5 4"
+                                Content="O"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="O">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="9"
+                                Margin="5 4 5 4"
+                                Content="P"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="P">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="5 4 5 4"
+                                Content="A"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="A">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="2"
+                                Margin="5 4 5 4"
+                                Content="S"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="S">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="3"
+                                Margin="5 4 5 4"
+                                Content="D"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="D">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="4"
+                                Margin="5 4 5 4"
+                                Content="F"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="F">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="5"
+                                Margin="5 4 5 4"
+                                Content="G"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="G">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="6"
+                                Margin="5 4 5 4"
+                                Content="H"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="H">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="7"
+                                Margin="5 4 5 4"
+                                Content="J"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="J">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="8"
+                                Margin="5 4 5 4"
+                                Content="K"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="K">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="9"
+                                Margin="5 4 5 4"
+                                Content="L"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="L">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <!--SLOVA_TRECI_RED-->
+                        
+                        <Button Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="5 4 5 4"
+                                Content="Z"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="Z">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        
+                        <Button Grid.Row="3"
+                                Grid.Column="2"
+                                Margin="5 4 5 4"
+                                Content="X"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="X">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="3"
+                                Grid.Column="3"
+                                Margin="5 4 5 4"
+                                Content="C"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="C">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="3"
+                                Grid.Column="4"
+                                Margin="5 4 5 4"
+                                Content="V"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="V">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="3"
+                                Grid.Column="5"
+                                Margin="5 4 5 4"
+                                Content="B"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="B">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="3"
+                                Grid.Column="6"
+                                Margin="5 4 5 4"
+                                Content="N"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="N">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Row="3"
+                                Grid.Column="7"
+                                Margin="5 4 5 4"
+                                Content="M"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter="M">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        
+                        <!--BACKSPACE-->
+                        <Button Grid.Row="3"
+                                Grid.Column="8"
+                                Grid.ColumnSpan="2"
+                                Margin="5 4 5 4"
+                                Content="Backspace"
+                                Command="{Binding BackspaceCommand}"
+                                CommandParameter="Backspace">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        
+                        <!--SPACE-->
+                        <Button Grid.Row="4"
+                                Grid.Column="2"
+                                Grid.ColumnSpan="5"
+                                Margin="5 4 5 4"
+                                Content="Space"
+                                Command="{Binding CharPressedCommand}"
+                                CommandParameter=" ">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </StackPanel>            
+        </StackPanel>
+    </Grid>
+</UserControl>
